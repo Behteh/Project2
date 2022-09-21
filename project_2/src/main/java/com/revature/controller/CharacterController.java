@@ -14,26 +14,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/character")
 public class CharacterController {
-	@PostMapping(value="/register")
-	public String register(
-			@RequestParam(name="username", required=true, defaultValue="") String username,
-			@RequestParam(name="password", required=true, defaultValue="") String password,
+	@PostMapping(value="/create")
+	public String create(
+			@RequestParam(name="name", required=true, defaultValue="") String charname,
 			Model model) {
 
-		return "register";
+		return "create";
 	}
 
 	@GetMapping(value="/login")
 	public String login(
-			@RequestParam(name="username", required=true, defaultValue="") String username,
-			@RequestParam(name="password", required=true, defaultValue="") String password,
+			@RequestParam(name="name", required=true, defaultValue="") String charname,
 			Model model) {
 
 		return "login";
 	}
 
 	@GetMapping(value="/{id}", produces="application/json")
-	public @ResponseBody Object getUser( //Change to return User once implemented
+	public @ResponseBody Object getCharacter( //Change to return User once implemented
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id) {
 		
@@ -44,8 +42,8 @@ public class CharacterController {
 	public String updateUser(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id,
-			@RequestParam(name="weaponID", required=false) int weaponID,
-			@RequestParam(name="armorID", required=false) int armorID,
+			@RequestParam(name="weaponID", required=false) int weapon_iD,
+			@RequestParam(name="armorID", required=false) int armor_iD,
 			@RequestParam(name="name", required=false) String name
 			) {
 
