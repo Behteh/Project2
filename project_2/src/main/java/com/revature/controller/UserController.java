@@ -16,9 +16,7 @@ public class UserController {
 	@GetMapping(value="/{id}/profile", produces="application/json")
 	public @ResponseBody Object getUser( //Change to return User once implemented
 			@PathVariable("id") int user_id) {
-		String s;
-		char aChar = 'A';
-		aChar = (char) (aChar-'Z'+'z');
+
 		return null;
 	}
 	
