@@ -9,13 +9,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.revature.exceptions.GameUserNotFoundException;
+
+
+
 @Controller
-@RequestMapping("/friends")
+@RequestMapping("/user")
 public class UserController {
 
 	@GetMapping(value="/{id}/profile", produces="application/json")
 	public @ResponseBody Object getUser( //Change to return User once implemented
-			@PathVariable("id") int user_id) {
+			@PathVariable("id") int user_id)
+			throws GameUserNotFoundException{
 
 		return null;
 	}
@@ -29,7 +34,7 @@ public class UserController {
 		return "create";
 	}
 
-	@GetMapping(value="/login")
+	@PostMapping(value="/login")
 	public String login(
 			@RequestParam(name="username", required=true, defaultValue="") String username,
 			@RequestParam(name="password", required=true, defaultValue="") String password,

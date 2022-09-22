@@ -1,5 +1,7 @@
 package com.revature.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,6 +12,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.revature.exceptions.CharacterNotFoundException;
+import com.revature.exceptions.MessageNotFoundException;
+import com.revature.exceptions.NoArmorsException;
+import com.revature.exceptions.NoWeaponsException;
+import com.revature.repository.entity.Armor;
+import com.revature.repository.entity.ChatMessage;
+import com.revature.repository.entity.GameUser;
+import com.revature.repository.entity.Weapon;
 
 @Controller
 @RequestMapping("/character")
@@ -22,18 +33,19 @@ public class CharacterController {
 		return "create";
 	}
 
-	@GetMapping(value="/login")
+	@PostMapping(value="/login")
 	public String login(
 			@RequestParam(name="name", required=true, defaultValue="") String charname,
-			Model model) {
+			Model model) throws CharacterNotFoundException {
 
 		return "login";
 	}
 
 	@GetMapping(value="/{id}", produces="application/json")
-	public @ResponseBody Object getCharacter( //Change to return User once implemented
+	public @ResponseBody GameUser getCharacter(
 			@PathVariable("id") int player_id,
-			@RequestParam(name="id", required=true) int char_id) {
+			@RequestParam(name="id", required=true) int char_id
+			) throws CharacterNotFoundException, NoArmorsException, NoWeaponsException {
 		
 		return null;
 	}
@@ -45,7 +57,7 @@ public class CharacterController {
 			@RequestParam(name="weaponID", required=false) int weapon_iD,
 			@RequestParam(name="armorID", required=false) int armor_iD,
 			@RequestParam(name="name", required=false) String name
-			) {
+			) throws CharacterNotFoundException {
 
 		return "update";
 	}
@@ -54,25 +66,25 @@ public class CharacterController {
 	public @ResponseBody String deleteChar(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id
-			) {
+			) throws CharacterNotFoundException {
 		
 		return "delete";
 	}
 	
 	@GetMapping(value="/{id}/weapons", produces="application/json")
-	public @ResponseBody Object getWeapons( //Change to Weapon array once implemented
+	public @ResponseBody List<Weapon> getWeapons(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id
-			) {
+			) throws CharacterNotFoundException, NoWeaponsException{
 		
 		return null;
 	}
 	
 	@GetMapping(value="/{id}/armor", produces="application/json")
-	public @ResponseBody Object getArmor( //Change to Armor array once implemented
+	public @ResponseBody List<Armor> getArmor(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id
-			) {
+			) throws CharacterNotFoundException, NoArmorsException {
 		
 		return null;
 	}
@@ -81,36 +93,36 @@ public class CharacterController {
 	public String postMessage(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id
-			) {
+			) throws CharacterNotFoundException {
 		
 		return "message";
 	}
 	
 	@GetMapping(value="/{id}/messages", produces="application/json")
-	public @ResponseBody Object getMessages( //Change to Message array once implemented
+	public @ResponseBody List<ChatMessage> getMessages(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id
-			) {
+			) throws CharacterNotFoundException {
 		
 		return null;
 	}
 	
 	@GetMapping(value="/{id}/message/{mid}", produces="application/json")
-	public @ResponseBody Object getMessage( //Change to Message once implemented
+	public @ResponseBody ChatMessage getMessage(
 			@PathVariable("id") int player_id,
 			@PathVariable("mid") int message_id,
 			@RequestParam(name="id", required=true) int char_id
-			) {
+			) throws CharacterNotFoundException, MessageNotFoundException {
 		
 		return null;
 	}
 	
 	@GetMapping(value="/{id}/message/search", produces="application/json")
-	public @ResponseBody Object findMessage( //Change to Message array once implemented
+	public @ResponseBody List<ChatMessage> findMessage(
 			@PathVariable("id") int player_id,
 			@RequestParam(name="id", required=true) int char_id,
 			@RequestParam(name="keywords", required=false) String keywords
-			) {
+			) throws CharacterNotFoundException {
 		//Not sure how I should do the keywords param
 		
 		return null;
