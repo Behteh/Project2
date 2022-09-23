@@ -13,8 +13,8 @@ import javax.persistence.Table;
 public class Armor {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int armor_id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long armor_id;
 	
 	private String name;
 	
@@ -26,7 +26,7 @@ public class Armor {
 		super();
 	}
 
-	public Armor(int armor_id, String name, int defense, int cost) {
+	public Armor(long armor_id, String name, int defense, int cost) {
 		super();
 		this.armor_id = armor_id;
 		this.name = name;
@@ -34,11 +34,11 @@ public class Armor {
 		this.cost = cost;
 	}
 
-	public int getArmor_id() {
+	public long getArmor_id() {
 		return armor_id;
 	}
 
-	public void setArmor_id(int armor_id) {
+	public void setArmor_id(long armor_id) {
 		this.armor_id = armor_id;
 	}
 

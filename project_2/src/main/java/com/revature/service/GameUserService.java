@@ -28,6 +28,28 @@ public class GameUserService {
 		return gameUserRepository.findGameUserByUsernameAndPassword(username, password);
 	}
 	
+	public GameUser register(String username, String password) throws GameUserAlreadyExistsException
+	{
+		Optional<GameUser> userInfo = gameUserRepository.findGameUserByUsername(username);
+		if(userInfo.isPresent())
+		{
+			throw new GameUserAlreadyExistsException("Username is already taken");
+		}
+		else
+		{
+			try
+			{
+				 return gameUserRepository.save(new GameUser(username, password));
+			}
+			catch(Exception e)
+			{
+				System.out.println("Error creating user");
+				e.printStackTrace();
+			}
+		}
+		throw new GameUserAlreadyExistsException("Unknown exception occured");
+	}
+	
 	public GameUser save(GameUser gameUser)
 	{
 		return gameUserRepository.save(gameUser);

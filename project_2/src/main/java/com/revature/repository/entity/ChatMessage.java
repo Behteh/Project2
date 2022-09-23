@@ -15,9 +15,9 @@ public class ChatMessage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int message_id;
+	private long message_id;
 	
-	private int character_id;
+	private long character_id;
 	
 	private String message;
 	
@@ -27,7 +27,7 @@ public class ChatMessage {
 		super();
 	}
 
-	public ChatMessage(int message_id, int character_id, String message, LocalDate timestamp) {
+	public ChatMessage(long message_id, long character_id, String message, LocalDate timestamp) {
 		super();
 		this.message_id = message_id;
 		this.character_id = character_id;
@@ -35,19 +35,19 @@ public class ChatMessage {
 		this.timestamp = timestamp;
 	}
 
-	public int getMessage_id() {
+	public long getMessage_id() {
 		return message_id;
 	}
 
-	public void setMessage_id(int message_id) {
+	public void setMessage_id(long message_id) {
 		this.message_id = message_id;
 	}
 
-	public int getCharacter_id() {
+	public long getCharacter_id() {
 		return character_id;
 	}
 
-	public void setCharacter_id(int character_id) {
+	public void setCharacter_id(long character_id) {
 		this.character_id = character_id;
 	}
 

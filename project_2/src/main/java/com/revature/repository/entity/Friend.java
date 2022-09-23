@@ -14,44 +14,44 @@ public class Friend {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int friend_id;
+	private long friend_id;
 
-	private int user1;
+	private long user1;
 
-	private int user2;
+	private long user2;
 
 	public Friend() {
 		super();
 	}
 
-	public Friend(int friend_id, int user1, int user2) {
+	public Friend(long friend_id, long user1, long user2) {
 		super();
 		this.friend_id = friend_id;
 		this.user1 = user1;
 		this.user2 = user2;
 	}
 
-	public int getFriend_id() {
+	public long getFriend_id() {
 		return friend_id;
 	}
 
-	public void setFriend_id(int friend_id) {
+	public void setFriend_id(long friend_id) {
 		this.friend_id = friend_id;
 	}
 
-	public int getUser1() {
+	public long getUser1() {
 		return user1;
 	}
 
-	public void setUser1(int user1) {
+	public void setUser1(long user1) {
 		this.user1 = user1;
 	}
 
-	public int getUser2() {
+	public long getUser2() {
 		return user2;
 	}
 
-	public void setUser2(int user2) {
+	public void setUser2(long user2) {
 		this.user2 = user2;
 	}
 

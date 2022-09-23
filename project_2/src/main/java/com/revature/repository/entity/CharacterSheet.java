@@ -19,15 +19,15 @@ public class CharacterSheet {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int character_id;
+	private long character_id;
 	
-	private int user_id;
+	private long user_id;
 	
 	private String name;
 	
-	private int weapon_id;
+	private long weapon_id;
 	
-	private int armor_id;
+	private long armor_id;
 	
 	private int gold;
 	
@@ -37,7 +37,7 @@ public class CharacterSheet {
 		super();
 	}
 
-	public CharacterSheet(int character_id, int user_id, String name, int weapon_id, int armor_id, int gold,
+	public CharacterSheet(long character_id, long user_id, String name, long weapon_id, long armor_id, int gold,
 			int health) {
 		super();
 		this.character_id = character_id;
@@ -49,19 +49,19 @@ public class CharacterSheet {
 		this.health = health;
 	}
 
-	public int getCharacter_id() {
+	public long getCharacter_id() {
 		return character_id;
 	}
 
-	public void setCharacter_id(int character_id) {
+	public void setCharacter_id(long character_id) {
 		this.character_id = character_id;
 	}
 
-	public int getUser_id() {
+	public long getUser_id() {
 		return user_id;
 	}
 
-	public void setUser_id(int user_id) {
+	public void setUser_id(long user_id) {
 		this.user_id = user_id;
 	}
 
@@ -73,19 +73,19 @@ public class CharacterSheet {
 		this.name = name;
 	}
 
-	public int getWeapon_id() {
+	public long getWeapon_id() {
 		return weapon_id;
 	}
 
-	public void setWeapon_id(int weapon_id) {
+	public void setWeapon_id(long weapon_id) {
 		this.weapon_id = weapon_id;
 	}
 
-	public int getArmor_id() {
+	public long getArmor_id() {
 		return armor_id;
 	}
 
-	public void setArmor_id(int armor_id) {
+	public void setArmor_id(long armor_id) {
 		this.armor_id = armor_id;
 	}
 

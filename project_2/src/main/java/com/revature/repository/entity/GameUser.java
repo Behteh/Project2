@@ -13,8 +13,8 @@ import javax.persistence.Table;
 public class GameUser {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int user_id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long user_id;
 
 	private String username;
 	
@@ -30,7 +30,7 @@ public class GameUser {
 		super();
 	}
 
-	public GameUser(int user_id, String username, String password, boolean admin, String user_title,
+	public GameUser(long user_id, String username, String password, boolean admin, String user_title,
 			String avatar_url) {
 		super();
 		this.user_id = user_id;
@@ -41,11 +41,17 @@ public class GameUser {
 		this.avatar_url = avatar_url;
 	}
 
-	public int getUser_id() {
+	public GameUser(String username, String password) {
+		// TODO Auto-generated constructor stub
+		this.username = username;
+		this.password = password;
+	}
+
+	public long getUser_id() {
 		return user_id;
 	}
 
-	public void setUser_id(int user_id) {
+	public void setUser_id(long user_id) {
 		this.user_id = user_id;
 	}
 

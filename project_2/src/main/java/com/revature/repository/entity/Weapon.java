@@ -14,7 +14,7 @@ public class Weapon {
 	
 	@Id
 	@GeneratedValue (strategy = GenerationType.AUTO)
-	private int weapon_id;
+	private long weapon_id;
 	
 	private String name;
 	
@@ -26,7 +26,7 @@ public class Weapon {
 		super();
 	}
 
-	public Weapon(int weapon_id, String name, int strength, int cost) {
+	public Weapon(long weapon_id, String name, int strength, int cost) {
 		super();
 		this.weapon_id = weapon_id;
 		this.name = name;
@@ -34,11 +34,11 @@ public class Weapon {
 		this.cost = cost;
 	}
 
-	public int getWeapon_id() {
+	public long getWeapon_id() {
 		return weapon_id;
 	}
 
-	public void setWeapon_id(int weapon_id) {
+	public void setWeapon_id(long weapon_id) {
 		this.weapon_id = weapon_id;
 	}
 

@@ -15,11 +15,11 @@ public class PrivateMessage {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int message_id;
+	private long message_id;
 	
-	private int from_user_id;
+	private long from_user_id;
 	
-	private int to_user_id;
+	private long to_user_id;
 	
 	private String topic;
 	
@@ -31,7 +31,7 @@ public class PrivateMessage {
 		super();
 	}
 
-	public PrivateMessage(int message_id, int from_user_id, int to_user_id, String topic, String message,
+	public PrivateMessage(long message_id, long from_user_id, long to_user_id, String topic, String message,
 			LocalDate timestamp) {
 		super();
 		this.message_id = message_id;
@@ -42,27 +42,27 @@ public class PrivateMessage {
 		this.timestamp = timestamp;
 	}
 
-	public int getMessage_id() {
+	public long getMessage_id() {
 		return message_id;
 	}
 
-	public void setMessage_id(int message_id) {
+	public void setMessage_id(long message_id) {
 		this.message_id = message_id;
 	}
 
-	public int getFrom_user_id() {
+	public long getFrom_user_id() {
 		return from_user_id;
 	}
 
-	public void setFrom_user_id(int from_user_id) {
+	public void setFrom_user_id(long from_user_id) {
 		this.from_user_id = from_user_id;
 	}
 
-	public int getTo_user_id() {
+	public long getTo_user_id() {
 		return to_user_id;
 	}
 
-	public void setTo_user_id(int to_user_id) {
+	public void setTo_user_id(long to_user_id) {
 		this.to_user_id = to_user_id;
 	}
 
