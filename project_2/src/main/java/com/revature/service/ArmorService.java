@@ -13,7 +13,7 @@ import com.revature.repository.entity.Armor;
 @Service
 public class ArmorService {
 
-	ArmorRepository armorRepository;
+	private ArmorRepository armorRepository;
 
 	@Autowired
 	public ArmorService(ArmorRepository armorRepository) {

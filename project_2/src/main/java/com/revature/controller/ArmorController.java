@@ -20,18 +20,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.exceptions.ArmorCreationException;
 import com.revature.exceptions.ArmorNotFoundException;
+import com.revature.exceptions.GameUserAlreadyExistsException;
 import com.revature.exceptions.NoArmorsException;
 import com.revature.repository.entity.Armor;
 import com.revature.service.ArmorService;
-import com.revature.service.GameUserAlreadyExistsException;
 
 import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping("/armor")
 public class ArmorController {
-	
+	 
 	private ArmorService armorService;
 	
 	
@@ -62,8 +63,8 @@ public class ArmorController {
 	@PutMapping(value="/{id}/update")
 	public ResponseEntity<?> updateArmor(
 			@PathVariable("id") long armor_id,
-			@RequestParam(name="armorName", required=false) String name,
-			@RequestParam(name="armorDef", required=false) int defense,
+			@RequestParam(name="name", required=false) String name,
+			@RequestParam(name="defense", required=false) int defense,
 			@RequestParam(name="cost", required=false) int cost
 			) throws ArmorNotFoundException{
 		
@@ -76,21 +77,34 @@ public class ArmorController {
 	}
 	
 	@PutMapping(value="/create")
-	public String createArmor(
-			@RequestParam(name="weaponID", required=false) String name,
-			@RequestParam(name="armorID", required=false) int defense,
-			@RequestParam(name="name", required=false) int cost
-			) {
-
-		return "create";
+	public ResponseEntity createArmor(
+			@RequestParam(name="name", required=false) String name,
+			@RequestParam(name="defense", required=false) int defense,
+			@RequestParam(name="cost", required=false) int cost
+			) throws ArmorCreationException {
+		Armor newArmor = new Armor();
+		newArmor.setCost(cost);
+		newArmor.setDefense(defense);
+		newArmor.setName(name);
+		Optional<Armor> armor = Optional.of(armorService.save(newArmor));
+		if(armor.isPresent())
+		{
+			return ResponseEntity.status(201).body(armor);
+		}
+		throw new ArmorCreationException("There was an error creating the armor.");
 	}
 	
 	@DeleteMapping(value="/{id}/delete")
-	public String deleteArmor(
-			@PathVariable("id") int armor_id
+	public ResponseEntity deleteArmor(
+			@PathVariable("id") long armor_id
 			) throws ArmorNotFoundException {
-
-		return "delete";
+		Optional<Armor> armor = armorService.findById(armor_id);
+		if(armor.isPresent())
+		{
+			armorService.deleteById(armor_id);
+			return ResponseEntity.status(204).body("");
+		}
+		throw new ArmorNotFoundException("The armor was not found.");
 	}
 	
 	@ExceptionHandler(NoArmorsException.class)
@@ -106,12 +120,24 @@ public class ArmorController {
 	}
 	
 	@ExceptionHandler(ArmorNotFoundException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public Object onArmorNotFoundException() {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_code", 404);
 		jsonObject.appendField("error_message", "The specified armor does not exist.");
 		jsonObject.appendField("error_cause", "Make sure to request the proper armor.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(ArmorCreationException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Object onArmorCreationException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 500);
+		jsonObject.appendField("error_message", "There was a problem creating the armor.");
+		jsonObject.appendField("error_cause", "Perhaps the auto increment value is wrong.");
 		jsonObject.appendField("date", LocalDate.now());
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;

@@ -3,10 +3,12 @@ package com.revature.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.revature.repository.PrivateMessageRepository;
 import com.revature.repository.entity.PrivateMessage;
 
+@Service
 public class PrivateMessageService {
 
 	PrivateMessageRepository privateMessageRepository;

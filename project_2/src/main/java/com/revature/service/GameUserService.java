@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.revature.exceptions.GameUserAlreadyExistsException;
 import com.revature.repository.GameUserRepository;
 import com.revature.repository.entity.GameUser;
 

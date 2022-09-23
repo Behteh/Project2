@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.exceptions.GameUserAlreadyExistsException;
 import com.revature.exceptions.GameUserNotFoundException;
 import com.revature.repository.entity.GameUser;
-import com.revature.service.GameUserAlreadyExistsException;
 import com.revature.service.GameUserService;
 
 import net.minidev.json.JSONObject;
@@ -57,7 +57,7 @@ public class UserController {
 			GameUser gameUser = gameUserService.register(username, password);
 			if(gameUser.getUser_id() >= 1)
 			{
-				return ResponseEntity.ok(gameUser);
+				return ResponseEntity.status(201).body(gameUser);
 			}
 			throw new GameUserAlreadyExistsException("Username already exists");
 	}
@@ -80,10 +80,10 @@ public class UserController {
 	}
 	
 	@ExceptionHandler(GameUserNotFoundException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public Object onGameUserNotFoundException() {
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_code", 404);
 		jsonObject.appendField("error_message", "The user does not exist.");
 		jsonObject.appendField("error_cause", "You entered an invalid user id or the user credentials are not correct.");
 		jsonObject.appendField("date", LocalDate.now());

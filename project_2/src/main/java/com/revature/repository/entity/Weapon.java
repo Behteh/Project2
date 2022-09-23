@@ -21,7 +21,7 @@ public class Weapon {
 	private  int strength;
 	
 	private int cost;
-
+	
 	public Weapon() {
 		super();
 	}
