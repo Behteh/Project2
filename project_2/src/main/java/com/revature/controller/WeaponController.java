@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.exceptions.ArmorNotFoundException;
 import com.revature.exceptions.GameUserNotFoundException;
 import com.revature.exceptions.NoWeaponsException;
 import com.revature.exceptions.WeaponNotFoundException;
@@ -61,7 +62,7 @@ public class WeaponController {
 	}
 	
 	@GetMapping(value="/{id}", produces="application/json")
-	public @ResponseBody ResponseEntity<?> getWeapon( //Change to return Weapon once implemented
+	public @ResponseBody ResponseEntity<?> getWeapon(
 			@PathVariable("id") long weapon_id
 			) throws WeaponNotFoundException {
 		Optional<Weapon> weapon = weaponService.findById(weapon_id);
@@ -79,7 +80,7 @@ public class WeaponController {
 	}
 	
 	@PutMapping(value="/{id}/update")
-	public ResponseEntity updateWeapon(
+	public ResponseEntity<?> updateWeapon(
 			@PathVariable("id") long weapon_id,
 			@RequestParam(name="name", required=false) String name,
 			@RequestParam(name="strength", required=false) int strength,
@@ -101,21 +102,31 @@ public class WeaponController {
 	}
 	
 	@PutMapping(value="/create")
-	public String createWeapon(
+	public ResponseEntity<?> createWeapon(
 			@RequestParam(name="name", required=false) String name,
 			@RequestParam(name="strength", required=false) int strength,
 			@RequestParam(name="cost", required=false) int cost
 			) {
-
-		return "create";
+		Weapon weapon = new Weapon();
+		weapon.setName(name);
+		weapon.setStrength(strength);
+		weapon.setCost(cost);
+		Weapon newWeapon = weaponService.save(weapon);
+		return ResponseEntity.status(201).body(newWeapon);
 	}
 	
 	@DeleteMapping(value="/{id}/delete")
-	public String deleteWeapon(
-			@PathVariable("id") int weapon_id
+	public ResponseEntity<?> deleteWeapon(
+			@PathVariable("id") long weapon_id
 			) throws WeaponNotFoundException {
 
-		return "delete";
+		Optional<Weapon> weapon = weaponService.findById(weapon_id);
+		if(weapon.isPresent())
+		{
+			weaponService.deleteById(weapon_id);
+			return ResponseEntity.status(204).body("");
+		}
+		throw new WeaponNotFoundException("The weapon was not found.");
 	}
 	
 	@ExceptionHandler(WeaponNotFoundException.class)
@@ -125,6 +136,18 @@ public class WeaponController {
 		jsonObject.appendField("error_code", 404);
 		jsonObject.appendField("error_message", "The weapon does not exist.");
 		jsonObject.appendField("error_cause", "You navigated directly to the page instead of using a link.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(NoWeaponsException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Object onNoWeaponsException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 500);
+		jsonObject.appendField("error_message", "There are no weapons.");
+		jsonObject.appendField("error_cause", "Make sure the administrator creates some weapons.");
 		jsonObject.appendField("date", LocalDate.now());
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;

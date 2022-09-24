@@ -32,4 +32,8 @@ public class CharacterSheetService {
 	{
 		characterSheetRepository.deleteById(id);
 	}
+
+	public boolean exists(long char_id) {
+		return characterSheetRepository.existsById(char_id);
+	}
 }

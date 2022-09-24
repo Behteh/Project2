@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Weapon {
 	
 	@Id
-	@GeneratedValue (strategy = GenerationType.AUTO)
+	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private long weapon_id;
 	
 	private String name;
