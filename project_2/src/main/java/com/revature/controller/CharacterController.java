@@ -1,15 +1,19 @@
 package com.revature.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,11 +21,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.exceptions.CharacterNotFoundException;
+import com.revature.exceptions.GameUserNotFoundException;
 import com.revature.exceptions.MessageNotFoundException;
 import com.revature.exceptions.NoArmorsException;
+import com.revature.exceptions.NoPermissionException;
 import com.revature.exceptions.NoWeaponsException;
 import com.revature.repository.CharacterSheetRepository;
 import com.revature.repository.entity.Armor;
@@ -185,13 +192,20 @@ public class CharacterController {
 	}
 	
 	@GetMapping(value="/{id}/message/{mid}", produces="application/json")
-	public @ResponseBody ChatMessage getMessage(
-			@PathVariable("id") int player_id,
-			@PathVariable("mid") int message_id,
-			@RequestParam(name="id", required=true) int char_id
-			) throws CharacterNotFoundException, MessageNotFoundException {
-		
-		return null;
+	public @ResponseBody ResponseEntity<?> getMessage(
+			@PathVariable("id") long player_id,
+			@PathVariable("mid") long message_id
+			) throws CharacterNotFoundException, MessageNotFoundException, NoPermissionException {
+		Optional<PrivateMessage> pm =  privateMessageService.findById(message_id);
+		if(!pm.isPresent())
+		{
+			throw new MessageNotFoundException();
+		}
+		if(pm.get().getToUserId() != player_id)
+		{
+			throw new NoPermissionException();
+		}
+		return ResponseEntity.ok(pm.get());
 	}
 	
 	@GetMapping(value="/{id}/message/search", produces="application/json")
@@ -203,6 +217,42 @@ public class CharacterController {
 		//Not sure how I should do the keywords param
 		
 		return null;
+	}
+	
+	@ExceptionHandler(CharacterNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Object onCharacterNotFoundException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 404);
+		jsonObject.appendField("error_message", "The character does not exist.");
+		jsonObject.appendField("error_cause", "You entered an invalid character.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(MessageNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Object onMessageNotFoundException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 404);
+		jsonObject.appendField("error_message", "The message does not exist.");
+		jsonObject.appendField("error_cause", "You entered an invalid message id instead of following links.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(NoPermissionException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Object onNoPermissionException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 403);
+		jsonObject.appendField("error_message", "You do not have permission to access this content.");
+		jsonObject.appendField("error_cause", "You are not logged in or are trying to access a resource you are not allowed to access.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
 	}
 	
 }
