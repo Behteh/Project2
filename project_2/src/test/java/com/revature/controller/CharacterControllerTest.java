@@ -4,6 +4,9 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,9 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.util.MultiValueMap;
 import org.junit.jupiter.api.Assertions;
 
 import com.revature.exceptions.CharacterNotFoundException;
+
+import net.minidev.json.JSONObject;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -24,10 +30,10 @@ public class CharacterControllerTest{
 	
 	@Test
 	public void createCharacterTest() throws Exception{
-		mvc.perform(MockMvcRequestBuilders.post("/character/create?name=Fylo&user_id=1").accept(MediaType.APPLICATION_JSON))
-		.andExpect(status().is(201))
-		.andExpect(content().string(equalTo("a")));
+		mvc.perform(MockMvcRequestBuilders.post("/character/create").param("user_id", "2").param("name", "Fylo"))
+		.andExpect(status().is(201));
 	}
+	
 	
 	@Test
 	public void getCharacterTest() throws Exception{
@@ -47,4 +53,5 @@ public class CharacterControllerTest{
 	public void updateCharacterTest() throws Exception{
 		
 	}
+	
 }

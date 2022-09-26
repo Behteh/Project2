@@ -18,7 +18,7 @@ public class CharacterSheet {
 	 */
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long character_id;
 	
 	private long user_id;
@@ -35,6 +35,9 @@ public class CharacterSheet {
 
 	public CharacterSheet() {
 		super();
+		this.weapon_id = 1;
+		this.armor_id = 1;
+		this.health = 10;
 	}
 
 	public CharacterSheet(long character_id, long user_id, String name, long weapon_id, long armor_id, int gold,

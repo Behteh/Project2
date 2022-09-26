@@ -37,6 +37,7 @@ import com.revature.repository.entity.ChatMessage;
 import com.revature.repository.entity.GameUser;
 import com.revature.repository.entity.PrivateMessage;
 import com.revature.repository.entity.Weapon;
+import com.revature.service.CharacterArmorService;
 import com.revature.service.CharacterSheetService;
 import com.revature.service.CharacterWeaponsService;
 import com.revature.service.PrivateMessageService;
@@ -50,13 +51,15 @@ public class CharacterController {
 	private CharacterSheetService characterSheetService;
 	private CharacterWeaponsService characterWeaponsService;
 	private PrivateMessageService privateMessageService;
-	
+	private CharacterArmorService characterArmorService;
 
 	public CharacterController(CharacterSheetService characterSheetService,
-			CharacterWeaponsService characterWeaponsService, PrivateMessageService privateMessageService) {
+			CharacterWeaponsService characterWeaponsService, PrivateMessageService privateMessageService,
+			CharacterArmorService characterArmorService) {
 		this.characterSheetService = characterSheetService;
 		this.characterWeaponsService = characterWeaponsService;
 		this.privateMessageService = privateMessageService;
+		this.characterArmorService = characterArmorService;
 	}
 
 	@PostMapping(value="/create")
@@ -141,13 +144,12 @@ public class CharacterController {
 		return ResponseEntity.ok(weapons);
 	}
 	
-	@GetMapping(value="/{id}/armor", produces="application/json")
-	public @ResponseBody List<Armor> getArmor(
-			@PathVariable("id") int player_id,
-			@RequestParam(name="id", required=true) int char_id
+	@GetMapping(value="/{id}/armors", produces="application/json")
+	public @ResponseBody ResponseEntity<?> getArmor(
+			@PathVariable("id") long player_id
 			) throws CharacterNotFoundException, NoArmorsException {
-		
-		return null;
+		ArrayList<Armor> armors = characterArmorService.findArmorsByCharacterId(player_id);
+		return ResponseEntity.ok(armors);
 	}
 	
 	@PutMapping(value="/{id}/message")
