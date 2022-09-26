@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +34,10 @@ public class ChatMessageService {
 		chatMessageRepository.deleteById(id);
 	}
 	
+	public Optional<?> getRecentMessages()
+	{
+		Optional<List<ChatMessage>> messages = chatMessageRepository.getRecentMessages();
+		return messages;
+	}
+
 }

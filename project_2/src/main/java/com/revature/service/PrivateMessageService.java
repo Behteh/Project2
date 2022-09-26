@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,4 +35,9 @@ public class PrivateMessageService {
 		privateMessageRepository.deleteById(id);
 	}
 	
+	public Optional<List<PrivateMessage>> getRecentMessages(long id)
+	{
+		Optional<List<PrivateMessage>> messages = privateMessageRepository.findTop20ByToUserId(id);
+		return messages;
+	}
 }

@@ -1,8 +1,10 @@
 package com.revature.repository.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,29 +16,31 @@ import javax.persistence.Table;
 public class PrivateMessage {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long message_id;
 	
-	private long from_user_id;
+	@Column(name = "from_user_id")
+	private long fromUserId;
 	
-	private long to_user_id;
+	@Column(name = "to_user_id")
+	private long toUserId;
 	
 	private String topic;
 	
 	private String message;
 	
-	private LocalDate timestamp;
+	@Column(name="timestamp")
+	private LocalDateTime timestamp;
 
 	public PrivateMessage() {
 		super();
 	}
 
-	public PrivateMessage(long message_id, long from_user_id, long to_user_id, String topic, String message,
-			LocalDate timestamp) {
-		super();
+	public PrivateMessage(long message_id, long fromUserId, long toUserId, String topic, String message,
+		LocalDateTime timestamp) {
 		this.message_id = message_id;
-		this.from_user_id = from_user_id;
-		this.to_user_id = to_user_id;
+		this.fromUserId = fromUserId;
+		this.toUserId = toUserId;
 		this.topic = topic;
 		this.message = message;
 		this.timestamp = timestamp;
@@ -50,20 +54,20 @@ public class PrivateMessage {
 		this.message_id = message_id;
 	}
 
-	public long getFrom_user_id() {
-		return from_user_id;
+	public long getFromUserId() {
+		return fromUserId;
 	}
 
-	public void setFrom_user_id(long from_user_id) {
-		this.from_user_id = from_user_id;
+	public void setFromUserId(long fromUserId) {
+		this.fromUserId = fromUserId;
 	}
 
-	public long getTo_user_id() {
-		return to_user_id;
+	public long getToUserId() {
+		return toUserId;
 	}
 
-	public void setTo_user_id(long to_user_id) {
-		this.to_user_id = to_user_id;
+	public void setToUserId(long toUserId) {
+		this.toUserId = toUserId;
 	}
 
 	public String getTopic() {
@@ -82,23 +86,17 @@ public class PrivateMessage {
 		this.message = message;
 	}
 
-	public LocalDate getTimestamp() {
+	public LocalDateTime getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp) {
+	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(from_user_id, message, message_id, timestamp, to_user_id, topic);
-	}
-
-	@Override
-	public String toString() {
-		return "PrivateMessage [message_id=" + message_id + ", from_user_id=" + from_user_id + ", to_user_id="
-				+ to_user_id + ", topic=" + topic + ", message=" + message + ", timestamp=" + timestamp + "]";
+		return Objects.hash(fromUserId, message, message_id, timestamp, toUserId, topic);
 	}
 
 	@Override
@@ -110,11 +108,15 @@ public class PrivateMessage {
 		if (getClass() != obj.getClass())
 			return false;
 		PrivateMessage other = (PrivateMessage) obj;
-		return from_user_id == other.from_user_id && Objects.equals(message, other.message)
+		return fromUserId == other.fromUserId && Objects.equals(message, other.message)
 				&& message_id == other.message_id && Objects.equals(timestamp, other.timestamp)
-				&& to_user_id == other.to_user_id && Objects.equals(topic, other.topic);
+				&& toUserId == other.toUserId && Objects.equals(topic, other.topic);
+	}
+
+	@Override
+	public String toString() {
+		return "PrivateMessage [message_id=" + message_id + ", fromUserId=" + fromUserId + ", toUserId=" + toUserId
+				+ ", topic=" + topic + ", message=" + message + ", timestamp=" + timestamp + "]";
 	}
 	
-	
-
 }

@@ -1,5 +1,6 @@
 package com.revature.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,9 +28,11 @@ import com.revature.repository.entity.Armor;
 import com.revature.repository.entity.CharacterSheet;
 import com.revature.repository.entity.ChatMessage;
 import com.revature.repository.entity.GameUser;
+import com.revature.repository.entity.PrivateMessage;
 import com.revature.repository.entity.Weapon;
 import com.revature.service.CharacterSheetService;
 import com.revature.service.CharacterWeaponsService;
+import com.revature.service.PrivateMessageService;
 
 import net.minidev.json.JSONObject;
 
@@ -39,14 +42,14 @@ public class CharacterController {
 	
 	private CharacterSheetService characterSheetService;
 	private CharacterWeaponsService characterWeaponsService;
-	
-	
+	private PrivateMessageService privateMessageService;
 	
 
 	public CharacterController(CharacterSheetService characterSheetService,
-			CharacterWeaponsService characterWeaponsService) {
+			CharacterWeaponsService characterWeaponsService, PrivateMessageService privateMessageService) {
 		this.characterSheetService = characterSheetService;
 		this.characterWeaponsService = characterWeaponsService;
+		this.privateMessageService = privateMessageService;
 	}
 
 	@PostMapping(value="/create")
@@ -140,22 +143,45 @@ public class CharacterController {
 		return null;
 	}
 	
-	@PostMapping(value="/{id}/message")
-	public String postMessage(
-			@PathVariable("id") int player_id,
-			@RequestParam(name="id", required=true) int char_id
+	@PutMapping(value="/{id}/message")
+	public ResponseEntity<PrivateMessage> postMessage(
+			@PathVariable("id") long player_id,
+			@RequestParam(name="id", required=true) long char_id,
+			@RequestParam(name="topic", required=true) String topic,
+			@RequestParam(name="message", required=true) String message
 			) throws CharacterNotFoundException {
-		
-		return "message";
+		if(characterSheetService.exists(player_id))
+		{
+			PrivateMessage pm = new PrivateMessage();
+			pm.setFromUserId(char_id);
+			pm.setToUserId(player_id);
+			pm.setTopic(topic);
+			pm.setMessage(message);
+			pm.setTimestamp(LocalDateTime.now());
+			return ResponseEntity.status(201).body(privateMessageService.save(pm));
+		}
+		throw new CharacterNotFoundException();
 	}
 	
 	@GetMapping(value="/{id}/messages", produces="application/json")
-	public @ResponseBody List<ChatMessage> getMessages(
-			@PathVariable("id") int player_id,
-			@RequestParam(name="id", required=true) int char_id
+	public @ResponseBody ResponseEntity<List<PrivateMessage>> getMessages(
+			@PathVariable("id") int player_id
 			) throws CharacterNotFoundException {
+	
+		if(characterSheetService.exists(player_id))
+		{
+			Optional<List<PrivateMessage>> messages = privateMessageService.getRecentMessages(player_id);
+			if(messages.isPresent())
+			{
+				return ResponseEntity.ok(messages.get());
+			}
+			return ResponseEntity.status(204).body(messages.get());
+		}
+		else
+		{
+			throw new CharacterNotFoundException();
+		}
 		
-		return null;
 	}
 	
 	@GetMapping(value="/{id}/message/{mid}", produces="application/json")
