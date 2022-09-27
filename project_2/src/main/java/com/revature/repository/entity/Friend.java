@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Friend {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long friend_id;
 
 	private long user1;

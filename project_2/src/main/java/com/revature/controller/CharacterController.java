@@ -212,8 +212,7 @@ public class CharacterController {
 	
 	@GetMapping(value="/{id}/message/search", produces="application/json")
 	public @ResponseBody List<ChatMessage> findMessage(
-			@PathVariable("id") int player_id,
-			@RequestParam(name="id", required=true) int char_id,
+			@PathVariable("id") long player_id,
 			@RequestParam(name="keywords", required=false) String keywords
 			) throws CharacterNotFoundException {
 		//Not sure how I should do the keywords param

@@ -34,9 +34,15 @@ public class ChatMessageService {
 		chatMessageRepository.deleteById(id);
 	}
 	
-	public Optional<?> getRecentMessages()
+	public Optional<List<ChatMessage>> getRecentMessages()
 	{
 		Optional<List<ChatMessage>> messages = chatMessageRepository.getRecentMessages();
+		return messages;
+	}
+	
+	public Optional<List<ChatMessage>> searchMessages(String keywords)
+	{
+		Optional<List<ChatMessage>> messages = chatMessageRepository.searchMessages(keywords);
 		return messages;
 	}
 

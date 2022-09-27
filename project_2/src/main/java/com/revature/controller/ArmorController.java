@@ -77,7 +77,7 @@ public class ArmorController {
 	}
 	
 	@PutMapping(value="/create")
-	public ResponseEntity createArmor(
+	public ResponseEntity<?> createArmor(
 			@RequestParam(name="name", required=false) String name,
 			@RequestParam(name="defense", required=false) int defense,
 			@RequestParam(name="cost", required=false) int cost
@@ -95,7 +95,7 @@ public class ArmorController {
 	}
 	
 	@DeleteMapping(value="/{id}/delete")
-	public ResponseEntity deleteArmor(
+	public ResponseEntity<?> deleteArmor(
 			@PathVariable("id") long armor_id
 			) throws ArmorNotFoundException {
 		Optional<Armor> armor = armorService.findById(armor_id);
