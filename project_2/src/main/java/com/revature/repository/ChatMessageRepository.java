@@ -15,4 +15,7 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long>{
 
 	@Query(value = "SELECT * FROM chat_messages WHERE message iLIKE %:keywords% ORDER BY timestamp DESC LIMIT 20", nativeQuery = true)
 	public Optional<List<ChatMessage>> searchMessages(String keywords);
+	
+	@Query(value = "INSERT INTO chat_messages (character_id, message) VALUES (:character_id, :message)", nativeQuery = true)
+	public ChatMessage createMessage(long character_id, String message);
 }

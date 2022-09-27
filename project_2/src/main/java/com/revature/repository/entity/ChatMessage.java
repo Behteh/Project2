@@ -1,6 +1,7 @@
 package com.revature.repository.entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import javax.persistence.Entity;
@@ -14,20 +15,21 @@ import javax.persistence.Table;
 public class ChatMessage {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long message_id;
 	
 	private long character_id;
 	
 	private String message;
 	
-	private LocalDate timestamp;
+	private LocalDateTime timestamp;
 
 	public ChatMessage() {
 		super();
+		this.timestamp = LocalDateTime.now();
 	}
 
-	public ChatMessage(long message_id, long character_id, String message, LocalDate timestamp) {
+	public ChatMessage(long message_id, long character_id, String message, LocalDateTime timestamp) {
 		super();
 		this.message_id = message_id;
 		this.character_id = character_id;
@@ -59,11 +61,11 @@ public class ChatMessage {
 		this.message = message;
 	}
 
-	public LocalDate getTimestamp() {
+	public LocalDateTime getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp) {
+	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
 

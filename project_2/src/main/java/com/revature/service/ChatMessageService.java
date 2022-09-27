@@ -45,5 +45,10 @@ public class ChatMessageService {
 		Optional<List<ChatMessage>> messages = chatMessageRepository.searchMessages(keywords);
 		return messages;
 	}
+	
+	public ChatMessage createMessage(long character_id, String message)
+	{
+		return chatMessageRepository.createMessage(character_id, message);
+	}
 
 }

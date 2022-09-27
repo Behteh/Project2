@@ -101,7 +101,9 @@ public class CharacterController {
 			@RequestParam(name="id", required=true) long char_id,
 			@RequestParam(name="weapon_id", required=false, defaultValue = "0") long weapon_id,
 			@RequestParam(name="armor_id", required=false, defaultValue = "0") long armor_id,
-			@RequestParam(name="name", required=false, defaultValue = "0") String name
+			@RequestParam(name="name", required=false, defaultValue = "0") String name,
+			@RequestParam(name = "gold", required=false, defaultValue = "0") int gold,
+			@RequestParam(name = "health", required=false, defaultValue = "0") int health
 			) throws CharacterNotFoundException {
 		if(!characterSheetService.exists(char_id))
 		{
@@ -119,6 +121,14 @@ public class CharacterController {
 		if(!name.equals("0"))
 		{
 			characterSheet.setName(name);
+		}
+		if(gold != 0)
+		{
+			characterSheet.setGold(gold);
+		}
+		if(health != 0)
+		{
+			characterSheet.setHealth(health);
 		}
 		return ResponseEntity.ok(characterSheetService.save(characterSheet));
 	}
@@ -211,13 +221,16 @@ public class CharacterController {
 	}
 	
 	@GetMapping(value="/{id}/message/search", produces="application/json")
-	public @ResponseBody List<ChatMessage> findMessage(
+	public @ResponseBody ResponseEntity<?> findMessage(
 			@PathVariable("id") long player_id,
-			@RequestParam(name="keywords", required=false) String keywords
-			) throws CharacterNotFoundException {
-		//Not sure how I should do the keywords param
-		
-		return null;
+			@RequestParam(name="keywords", required=true) String keywords
+			) throws CharacterNotFoundException, MessageNotFoundException {
+		Optional<List<PrivateMessage>> messages = privateMessageService.searchMessages(player_id, keywords);
+		if(messages.isPresent())
+		{
+			return ResponseEntity.ok(messages.get());
+		}
+		throw new MessageNotFoundException();
 	}
 	
 	@ExceptionHandler(CharacterNotFoundException.class)
@@ -245,7 +258,7 @@ public class CharacterController {
 	}
 	
 	@ExceptionHandler(NoPermissionException.class)
-	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
 	public Object onNoPermissionException() {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.appendField("error_code", 403);

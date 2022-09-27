@@ -40,4 +40,10 @@ public class PrivateMessageService {
 		Optional<List<PrivateMessage>> messages = privateMessageRepository.findTop20ByToUserId(id);
 		return messages;
 	}
+	
+	public Optional<List<PrivateMessage>> searchMessages(long character_id, String keywords)
+	{
+		Optional<List<PrivateMessage>> pms = privateMessageRepository.searchMessages(keywords, character_id);
+		return pms;
+	}
 }

@@ -8,8 +8,11 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -44,6 +47,30 @@ public class MessageController {
 			return ResponseEntity.ok(messages.get());
 		}
 		throw new MessageNotFoundException("There are no messages");
+	}
+	
+	@PutMapping(value="/add", produces="application/json")
+	public @ResponseBody ResponseEntity<?> createMessage(
+			@RequestParam(name = "id", required=true) long character_id,
+			@RequestParam(name = "message", required=true) String message)
+	{
+		ChatMessage chatMessage = new ChatMessage();
+		chatMessage.setCharacter_id(character_id);
+		chatMessage.setMessage(message);
+		return ResponseEntity.status(201).body(chatMessageService.save(chatMessage));
+	}
+	
+	@DeleteMapping(value="/{id}/delete")
+	public @ResponseBody ResponseEntity<?> deleteMessage(
+			@PathVariable("id") long id) throws MessageNotFoundException
+	{
+		Optional<ChatMessage> message = chatMessageService.findById(id);
+		if(message.isPresent())
+		{
+			chatMessageService.deleteById(id);
+			return ResponseEntity.status(204).body("");
+		}
+		throw new MessageNotFoundException();
 	}
 	
 	@GetMapping(value="/search", produces="application/json")
