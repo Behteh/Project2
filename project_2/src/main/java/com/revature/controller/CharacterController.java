@@ -60,6 +60,7 @@ public class CharacterController {
 			@RequestParam(name="name", required=true, defaultValue="") String charname,
 			@RequestParam(name="user_id", required=true) long user_id
 			) {
+		// TODO check if name exists
 		CharacterSheet characterSheet = new CharacterSheet();
 		characterSheet.setName(charname);
 		characterSheet.setUser_id(user_id);
@@ -113,6 +114,7 @@ public class CharacterController {
 		}
 		if(!name.equals("0"))
 		{
+			// TODO check if name exists
 			characterSheet.setName(name);
 		}
 		if(gold != 0)
@@ -273,6 +275,30 @@ public class CharacterController {
 		jsonObject.appendField("error_code", 403);
 		jsonObject.appendField("error_message", "You do not have permission to access this content.");
 		jsonObject.appendField("error_cause", "You are not logged in or are trying to access a resource you are not allowed to access.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(NoWeaponsException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onNoWeaponsException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "The character does not have any weapons.");
+		jsonObject.appendField("error_cause", "You visited this page directly rather than using a link.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(NoArmorsException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onNoArmorsException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "The character does not have any armors.");
+		jsonObject.appendField("error_cause", "You visited this page directly rather than using a link.");
 		jsonObject.appendField("date", LocalDate.now());
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;
