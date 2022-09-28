@@ -8,7 +8,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.util.NestedServletException;
-
-import com.revature.exceptions.CharacterNotFoundException;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -181,6 +175,20 @@ public class CharacterControllerTest{
         @Test
         public void searchMessageTest() throws Exception{
         	mvc.perform(MockMvcRequestBuilders.get("/character/1/message/search").param("keywords", "test"))
+    			.andExpect(status().is(200))
         		.andExpect(content().string(equalTo("[{\"message_id\":1,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"Test Topic\",\"message\":\"Test Message\",\"timestamp\":\"2022-09-26T13:16:00.200019\"}]")));
+        }
+        
+        @Test
+        public void searchMessageMsgNotFoundTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/message/search").param("keywords", "ajsykdgalsfhilas"))
+        		.andExpect(status().is(204))
+        		.andExpect(content().string(equalTo("[]")));
+        }
+        
+        @Test
+        public void searchMessageCharNorFoundTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/9999999/message/search").param("keywords", "a"))
+        		.andExpect(status().is(404));
         }
 }
