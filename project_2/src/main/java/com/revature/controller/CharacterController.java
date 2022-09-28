@@ -204,17 +204,21 @@ public class CharacterController {
 	
 	@GetMapping(value="/{id}/messages", produces="application/json")
 	public @ResponseBody ResponseEntity<List<PrivateMessage>> getMessages(
-			@PathVariable("id") int player_id
-			) throws CharacterNotFoundException {
+			@PathVariable("id") long player_id
+			) throws CharacterNotFoundException, MessageNotFoundException {
 	
 		if(characterSheetService.exists(player_id))
 		{
 			Optional<List<PrivateMessage>> messages = privateMessageService.getRecentMessages(player_id);
 			if(messages.isPresent())
 			{
-				return ResponseEntity.ok(messages.get());
+				if(messages.get().size() > 0)
+				{
+					return ResponseEntity.ok(messages.get());
+				}
+				return ResponseEntity.status(204).body(messages.get());
 			}
-			return ResponseEntity.status(204).body(messages.get());
+			throw new MessageNotFoundException();
 		}
 		else
 		{
