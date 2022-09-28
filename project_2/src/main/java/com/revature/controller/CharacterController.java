@@ -98,18 +98,18 @@ public class CharacterController {
 	@PutMapping(value="/{id}/update")
 	public ResponseEntity<?> updateUser(
 			@PathVariable("id") long player_id,
-			@RequestParam(name="id", required=true) long char_id,
 			@RequestParam(name="weapon_id", required=false, defaultValue = "0") long weapon_id,
 			@RequestParam(name="armor_id", required=false, defaultValue = "0") long armor_id,
 			@RequestParam(name="name", required=false, defaultValue = "0") String name,
 			@RequestParam(name = "gold", required=false, defaultValue = "0") int gold,
 			@RequestParam(name = "health", required=false, defaultValue = "0") int health
 			) throws CharacterNotFoundException {
-		if(!characterSheetService.exists(char_id))
+		if(!characterSheetService.exists(player_id))
 		{
 			throw new CharacterNotFoundException("The character was not found");
 		}
 		CharacterSheet characterSheet = new CharacterSheet();
+		characterSheet.setCharacter_id(player_id);
 		if(weapon_id != 0)
 		{
 			characterSheet.setWeapon_id(weapon_id);
