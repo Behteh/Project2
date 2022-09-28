@@ -5,13 +5,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +22,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.exceptions.CharacterNotFoundException;
-import com.revature.exceptions.GameUserNotFoundException;
 import com.revature.exceptions.MessageNotFoundException;
 import com.revature.exceptions.NoArmorsException;
 import com.revature.exceptions.NoPermissionException;
 import com.revature.exceptions.NoWeaponsException;
-import com.revature.repository.CharacterSheetRepository;
 import com.revature.repository.entity.Armor;
 import com.revature.repository.entity.CharacterSheet;
-import com.revature.repository.entity.ChatMessage;
-import com.revature.repository.entity.GameUser;
 import com.revature.repository.entity.PrivateMessage;
 import com.revature.repository.entity.Weapon;
 import com.revature.service.CharacterArmorService;
@@ -149,8 +142,16 @@ public class CharacterController {
 	public @ResponseBody ResponseEntity<?> getWeapons(
 			@PathVariable("id") long player_id
 			) throws CharacterNotFoundException, NoWeaponsException{
-	
+
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
 		ArrayList<Weapon> weapons = characterWeaponsService.findWeaponsByCharacterId(player_id);
+		if(weapons.size() == 0)
+		{
+			throw new NoWeaponsException();
+		}
 		return ResponseEntity.ok(weapons);
 	}
 	
@@ -158,7 +159,15 @@ public class CharacterController {
 	public @ResponseBody ResponseEntity<?> getArmor(
 			@PathVariable("id") long player_id
 			) throws CharacterNotFoundException, NoArmorsException {
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
 		ArrayList<Armor> armors = characterArmorService.findArmorsByCharacterId(player_id);
+		if(armors.size() == 0)
+		{
+			throw new NoArmorsException();
+		}
 		return ResponseEntity.ok(armors);
 	}
 	
