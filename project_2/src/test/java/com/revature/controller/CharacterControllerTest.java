@@ -103,9 +103,15 @@ public class CharacterControllerTest{
         
         @Test
         public void getWeaponsTest() throws Exception{
-        	//Not sure what it's supposed to return, but now it's returning "[]" which is probably incorrect
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/weapons"))
+        		.andExpect(content().string(equalTo("[{\"weapon_id\":1,\"name\":\"Great sword\",\"strength\":10,\"cost\":8},{\"weapon_id\":4,\"name\":\"Fish\",\"strength\":4,\"cost\":1}]")));
+        }
+        
+        @Test
+        public void getWeaponsNullTest() throws Exception{
+        	//Character 2 should have no weapons
         	mvc.perform(MockMvcRequestBuilders.get("/character/2/weapons"))
-        		.andExpect(content().string(equalTo("a")));
+        		.andExpect(content().string(equalTo("[{\"armor_id\":6,\"name\":\"Lightning Cape\",\"defense\":30,\"cost\":7030},{\"armor_id\":2,\"name\":\"Mail\",\"defense\":8,\"cost\":5}]")));
         }
         
         @Test
@@ -116,7 +122,13 @@ public class CharacterControllerTest{
         
         @Test
         public void getArmorsTest() throws Exception{
-        	//Not sure what it's supposed to return, but now it's returning "[]" which is probably incorrect
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/armors"))
+        		.andExpect(content().string(equalTo("a")));
+        }
+        
+        @Test
+        public void getArmorsNullTest() throws Exception{
+        	//character 2 should have no armors
         	mvc.perform(MockMvcRequestBuilders.get("/character/2/armors"))
         		.andExpect(content().string(equalTo("a")));
         }
