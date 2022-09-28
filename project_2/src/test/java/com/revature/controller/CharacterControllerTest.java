@@ -32,7 +32,7 @@ public class CharacterControllerTest{
         @Autowired
         private MockMvc mvc;
 
-        /*@Test
+        @Test
         @Order(1)
         public void createCharacterTest() throws Exception{
                 String result = mvc.perform(MockMvcRequestBuilders.post("/character/create").param("name", "Fylo").param("user_id", "2"))
@@ -46,8 +46,8 @@ public class CharacterControllerTest{
         @Test
         @Order(2)
         public void createCharacterDuplicateErrorTest() throws Exception{
-        	Assertions.assertThrows(NestedServletException.class, ()->
-            	mvc.perform(MockMvcRequestBuilders.post("/character/create").param("user_id", "2").param("name", "Fylo")));
+        		mvc.perform(MockMvcRequestBuilders.post("/character/create").param("user_id", "2").param("name", "Fylo"))
+        			.andExpect(status().is(400));
         }
 		
         @Test
@@ -62,9 +62,9 @@ public class CharacterControllerTest{
         @Test
         @Order(4)
         public void updateCharacterDuplicateNameTest() throws Exception{
-			Assertions.assertThrows(NestedServletException.class, ()->
         		mvc.perform(MockMvcRequestBuilders.put("/character/"+fylo_char_id+"/update")
-	                .param("user_id", "2").param("name", "philips")));
+	                .param("user_id", "2").param("name", "philips"))
+        			.andExpect(status().is(400));
         }
         
         @Test
@@ -99,7 +99,7 @@ public class CharacterControllerTest{
         public void getCharacterNotFoundTest() throws Exception{
         	mvc.perform(MockMvcRequestBuilders.get("/character/99999"))
         		.andExpect(status().is(404));
-        }*/
+        }
         
         @Test
         public void getWeaponsTest() throws Exception{
@@ -111,7 +111,7 @@ public class CharacterControllerTest{
         public void getWeaponsNullTest() throws Exception{
         	//Character 2 should have no weapons
         	mvc.perform(MockMvcRequestBuilders.get("/character/2/weapons"))
-        		.andExpect(content().string(equalTo("[{\"armor_id\":6,\"name\":\"Lightning Cape\",\"defense\":30,\"cost\":7030},{\"armor_id\":2,\"name\":\"Mail\",\"defense\":8,\"cost\":5}]")));
+    			.andExpect(status().is(400));
         }
         
         @Test
@@ -123,19 +123,64 @@ public class CharacterControllerTest{
         @Test
         public void getArmorsTest() throws Exception{
         	mvc.perform(MockMvcRequestBuilders.get("/character/1/armors"))
-        		.andExpect(content().string(equalTo("a")));
+        		.andExpect(content().string(equalTo("[{\"armor_id\":6,\"name\":\"Lighting Cape\",\"defense\":30,\"cost\":7030},{\"armor_id\":2,\"name\":\"Mail\",\"defense\":8,\"cost\":5}]")));
         }
         
         @Test
         public void getArmorsNullTest() throws Exception{
         	//character 2 should have no armors
         	mvc.perform(MockMvcRequestBuilders.get("/character/2/armors"))
-        		.andExpect(content().string(equalTo("a")));
+				.andExpect(status().is(400));
         }
         
         @Test
         public void getArmorsNotFoundTest() throws Exception{
         	mvc.perform(MockMvcRequestBuilders.get("/character/9999999/armors"))
         		.andExpect(status().is(404));
+        }
+        
+        @Test
+        public void getMessagesTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/messages"))
+    		.andExpect(status().isOk())
+        	.andExpect(content().string(equalTo("[{\"message_id\":1,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"Test Topic\",\"message\":\"Test Message\",\"timestamp\":\"2022-09-26T13:16:00.200019\"},{\"message_id\":2,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"Topic Two\",\"message\":\"Message Two\",\"timestamp\":\"2022-09-26T13:16:00.200019\"},{\"message_id\":3,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"REst Topic\",\"message\":\"Rest Message\",\"timestamp\":\"2022-09-26T13:16:00.200019\"},{\"message_id\":6,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"REst Topic\",\"message\":\"Rest Message\",\"timestamp\":\"2022-09-26T12:18:46.760303\"}]")));
+        }
+        
+        @Test
+        public void getMessagesEmptyTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/3/messages"))
+    		.andExpect(status().is(204))
+        	.andExpect(content().string(equalTo("[]")));
+        }
+        
+        @Test
+        public void getMessagesNotFoundTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/999999/messages"))
+    		.andExpect(status().is(404));
+        }
+        
+        @Test
+        public void getSingleMessageTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/message/1"))
+    		.andExpect(status().is(200))
+        	.andExpect(content().string(equalTo("{\"message_id\":1,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"Test Topic\",\"message\":\"Test Message\",\"timestamp\":\"2022-09-26T13:16:00.200019\"}")));
+        }
+        
+        @Test
+        public void getSingleMessageNoPermissionTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/3/message/1"))
+    		.andExpect(status().is(403));
+        }
+        
+        @Test
+        public void getSingleMessageMsgNotFoundTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/message/999"))
+    		.andExpect(status().is(404));
+        }
+        
+        @Test
+        public void searchMessageTest() throws Exception{
+        	mvc.perform(MockMvcRequestBuilders.get("/character/1/message/search").param("keywords", "test"))
+        		.andExpect(content().string(equalTo("[{\"message_id\":1,\"fromUserId\":2,\"toUserId\":1,\"topic\":\"Test Topic\",\"message\":\"Test Message\",\"timestamp\":\"2022-09-26T13:16:00.200019\"}]")));
         }
 }
