@@ -1,5 +1,6 @@
 package com.revature.service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,9 @@ public class FriendRequestService {
 	public void deleteById(Long id)
 	{
 		friendRequestRepository.deleteById(id);
+	}
+
+	public ArrayList<FriendRequest> findAllById(long id) {
+		return friendRequestRepository.findAllByUserId(id);
 	}
 }

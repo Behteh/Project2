@@ -249,9 +249,17 @@ public class CharacterController {
 			@PathVariable("id") long player_id,
 			@RequestParam(name="keywords", required=true) String keywords
 			) throws CharacterNotFoundException, MessageNotFoundException {
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
 		Optional<List<PrivateMessage>> messages = privateMessageService.searchMessages(player_id, keywords);
 		if(messages.isPresent())
 		{
+			if(messages.get().size() == 0)
+			{
+				return ResponseEntity.status(204).body(messages.get());
+			}
 			return ResponseEntity.ok(messages.get());
 		}
 		throw new MessageNotFoundException();

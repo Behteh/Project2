@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class FriendRequest {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long request_id;
 	
 	private long sender_id;
@@ -77,7 +77,4 @@ public class FriendRequest {
 		return "FriendRequest [request_id=" + request_id + ", sender_id=" + sender_id + ", receiver_id=" + receiver_id
 				+ "]";
 	}
-	
-	
-
 }

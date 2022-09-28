@@ -19,6 +19,11 @@ public class GameUserService {
 		this.gameUserRepository = gameUserRepository;
 	}
 	
+	public boolean exists(long id)
+	{
+		return gameUserRepository.existsById(id);
+	}
+	
 	public Optional<GameUser> findById(Long id)
 	{
 		return gameUserRepository.findById(id);
