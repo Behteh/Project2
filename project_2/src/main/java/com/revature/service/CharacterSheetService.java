@@ -36,4 +36,9 @@ public class CharacterSheetService {
 	public boolean exists(long char_id) {
 		return characterSheetRepository.existsById(char_id);
 	}
+
+	public boolean exists(String charname) {
+		// TODO Auto-generated method stub
+		return characterSheetRepository.existsByName(charname);
+	}
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.exceptions.CharacterNotFoundException;
+import com.revature.exceptions.GameUserAlreadyExistsException;
 import com.revature.exceptions.MessageNotFoundException;
 import com.revature.exceptions.NoArmorsException;
 import com.revature.exceptions.NoPermissionException;
@@ -59,8 +60,11 @@ public class CharacterController {
 	public ResponseEntity<?> create(
 			@RequestParam(name="name", required=true, defaultValue="") String charname,
 			@RequestParam(name="user_id", required=true) long user_id
-			) {
-		// TODO check if name exists
+			) throws GameUserAlreadyExistsException {
+		if(characterSheetService.exists(charname))
+		{
+			throw new GameUserAlreadyExistsException();
+		}
 		CharacterSheet characterSheet = new CharacterSheet();
 		characterSheet.setName(charname);
 		characterSheet.setUser_id(user_id);
@@ -92,18 +96,20 @@ public class CharacterController {
 	@PutMapping(value="/{id}/update")
 	public ResponseEntity<?> updateUser(
 			@PathVariable("id") long player_id,
+			@RequestParam(name="user_id", required=true, defaultValue = "0") long user_id,
 			@RequestParam(name="weapon_id", required=false, defaultValue = "0") long weapon_id,
 			@RequestParam(name="armor_id", required=false, defaultValue = "0") long armor_id,
 			@RequestParam(name="name", required=false, defaultValue = "0") String name,
 			@RequestParam(name = "gold", required=false, defaultValue = "0") int gold,
 			@RequestParam(name = "health", required=false, defaultValue = "0") int health
-			) throws CharacterNotFoundException {
+			) throws CharacterNotFoundException, GameUserAlreadyExistsException {
 		if(!characterSheetService.exists(player_id))
 		{
 			throw new CharacterNotFoundException("The character was not found");
 		}
 		CharacterSheet characterSheet = new CharacterSheet();
 		characterSheet.setCharacter_id(player_id);
+		characterSheet.setUser_id(user_id);
 		if(weapon_id != 0)
 		{
 			characterSheet.setWeapon_id(weapon_id);
@@ -114,7 +120,10 @@ public class CharacterController {
 		}
 		if(!name.equals("0"))
 		{
-			// TODO check if name exists
+			if(characterSheetService.exists(name))
+			{
+				throw new GameUserAlreadyExistsException();
+			}
 			characterSheet.setName(name);
 		}
 		if(gold != 0)
@@ -299,6 +308,18 @@ public class CharacterController {
 		jsonObject.appendField("error_code", 400);
 		jsonObject.appendField("error_message", "The character does not have any armors.");
 		jsonObject.appendField("error_cause", "You visited this page directly rather than using a link.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(GameUserAlreadyExistsException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onGameUserAlreadyExistsException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "The character name is already in use.");
+		jsonObject.appendField("error_cause", "You need to use a different name for your character.");
 		jsonObject.appendField("date", LocalDate.now());
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;
