@@ -45,7 +45,7 @@ public class FriendsController {
 		this.gus = gus;
 	}
 	@GetMapping(value="/{id}", produces="application/json")
-	public @ResponseBody ResponseEntity<?> getFriends( //Change to return Friends array once implemented
+	public @ResponseBody ResponseEntity<?> getFriends(
 			@PathVariable("id") long user_id
 			) throws GameUserNotFoundException, NoFriendsException{
 		if(!gus.exists(user_id))
