@@ -91,7 +91,8 @@ public class FriendsControllerTest {
     @Test
     public void findNoRequestsTest() throws Exception{
     	mvc.perform(MockMvcRequestBuilders.get("/friends/4/requests/view"))
-			.andExpect(status().is(200));
+			.andExpect(status().is(204))
+			.andExpect(content().string(equalTo("[]")));
     }
     
     @Test
@@ -114,7 +115,7 @@ public class FriendsControllerTest {
     
     //I have to comment this out because it's not being deleted
     //This test works though
-    /*@Test
+    @Test
     @Order(4)
     public void addFriendRequestTest() throws Exception{
     	String result = mvc.perform(MockMvcRequestBuilders.put("/friends/4/requests/add").param("id", "3"))
@@ -123,21 +124,21 @@ public class FriendsControllerTest {
     	
     	String[] resultSplit = result.split("[:,]");
     	friendId = Integer.parseInt(resultSplit[1]);
-    }*/
+    }
 
-    /*@Test
+    @Test
     @Order(5)
     public void deleteFriendRequestTest() throws Exception{
     	System.out.println("Request ID is "+friendId);
-    	mvc.perform(MockMvcRequestBuilders.delete("/friends/"+friendId+"/requests/delete").param("id", "3"))
+    	mvc.perform(MockMvcRequestBuilders.delete("/friends/4/requests/delete").param("id", String.valueOf(friendId)))
 			.andExpect(status().is(204));
-    }*/
+    }
 
-    /*@Test
+    @Test
     @Order(6)
     public void deleteFriendRequestNotFoundTest() throws Exception{
-    	mvc.perform(MockMvcRequestBuilders.delete("/friends/"+friendId+"/requests/delete").param("id", "3"))
-			.andExpect(status().is(404));
-    }*/
+    	Assertions.assertThrows(NestedServletException.class, ()->
+    		mvc.perform(MockMvcRequestBuilders.delete("/friends/4/requests/delete").param("id", String.valueOf(friendId))));
+    }
     
 }
