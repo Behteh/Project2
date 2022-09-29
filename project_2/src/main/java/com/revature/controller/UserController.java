@@ -57,7 +57,14 @@ public class UserController {
 			GameUser gameUser = gameUserService.register(username, password);
 			if(gameUser.getUser_id() >= 1)
 			{
-				return ResponseEntity.status(201).body(gameUser);
+				JSONObject obj = new JSONObject();
+				obj.appendField("user_id", gameUser.getUser_id());
+				obj.appendField("username", gameUser.getUsername());
+				obj.appendField("user_title", gameUser.getUser_title());
+				obj.appendField("avatar_url", gameUser.getAvatar_url());
+				obj.appendField("admin", gameUser.isAdmin());
+				obj.appendField("url", "/user/" + gameUser.getUser_id());
+				return ResponseEntity.status(201).body(obj);
 			}
 			throw new GameUserAlreadyExistsException("Username already exists");
 	}
@@ -74,7 +81,14 @@ public class UserController {
 		Optional<GameUser> gameUser = gameUserService.findByUsernameAndPassword(username, password);
 		if(gameUser.isPresent())
 		{
-			return ResponseEntity.ok(gameUser.get());
+			JSONObject obj = new JSONObject();
+			obj.appendField("user_id", gameUser.get().getUser_id());
+			obj.appendField("username", gameUser.get().getUsername());
+			obj.appendField("user_title", gameUser.get().getUser_title());
+			obj.appendField("avatar_url", gameUser.get().getAvatar_url());
+			obj.appendField("admin", gameUser.get().isAdmin());
+			obj.appendField("url", "/user/" + gameUser.get().getUser_id());
+			return ResponseEntity.ok().body(obj);
 		}
 		throw new GameUserNotFoundException("User not found");
 	}

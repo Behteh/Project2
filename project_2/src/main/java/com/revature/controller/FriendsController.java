@@ -126,6 +126,8 @@ public class FriendsController {
 		return ResponseEntity.status(201).body(frs.save(fr));
 	}
 	
+	// /{id} is receiver_id in the database
+	// id parameter is request_id in the database.
 	@DeleteMapping(value = "/{id}/requests/delete")
 	public ResponseEntity<?> deleteFriendRequest(
 			@PathVariable("id") long id,
