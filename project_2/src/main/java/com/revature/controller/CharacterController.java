@@ -144,10 +144,6 @@ public class CharacterController {
 		}
 		if(!name.equals("0"))
 		{
-			if(characterSheetService.exists(name))
-			{
-				throw new GameUserAlreadyExistsException();
-			}
 			characterSheet.setName(name);
 		}
 		if(gold != 0)
