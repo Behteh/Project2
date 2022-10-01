@@ -31,10 +31,28 @@ public class CharacterWeaponsService {
 		ArrayList<Weapon> weapons = new ArrayList<>();
 		for(CharacterWeapons o : myList)
 		{
-			Optional<Weapon> weapon = weaponRepository.findById(o.getWeapon_id());
+			Optional<Weapon> weapon = weaponRepository.findById(o.getWeaponId());
 			weapons.add(weapon.get());
 		}
 		return weapons;
 	}
-
+	
+	public Weapon addWeapon(long character_id, long weapon_id)
+	{
+		CharacterWeapons weapon = new CharacterWeapons();
+		weapon.setCharacter_id(character_id);
+		weapon.setWeapon_id(weapon_id);
+		repo.save(weapon);
+		Optional<Weapon> weaponStats = weaponRepository.findById(weapon_id);
+		return weaponStats.get();
+	}
+	
+	public void removeWeapon(long character_id, long weapon_id)
+	{
+		Optional<CharacterWeapons> cw = repo.findFirstByCharacterIdAndWeaponId(character_id, weapon_id);
+		if(cw.isPresent())
+		{
+			repo.deleteById(cw.get().getId());
+		}
+	}
 }

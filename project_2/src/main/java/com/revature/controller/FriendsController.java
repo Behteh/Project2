@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -176,6 +175,18 @@ public class FriendsController {
 		jsonObject.appendField("error_code", 400);
 		jsonObject.appendField("error_message", "The source user and destination user are the same.");
 		jsonObject.appendField("error_cause", "You used the same user for the source and destination.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "There was an error processing the request.");
+		jsonObject.appendField("error_cause", "A general exception occurred that doesn't have a specific handler.");
 		jsonObject.appendField("date", LocalDate.now());
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;

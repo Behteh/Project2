@@ -1,6 +1,5 @@
 package com.revature.repository.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -92,6 +91,5 @@ public class ChatMessage {
 		return "ChatMessage [message_id=" + message_id + ", character_id=" + character_id + ", message=" + message
 				+ ", timestamp=" + timestamp + "]";
 	}
-	
 	
 }

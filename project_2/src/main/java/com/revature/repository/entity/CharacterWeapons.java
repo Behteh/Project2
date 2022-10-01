@@ -14,13 +14,14 @@ import javax.persistence.Table;
 public class CharacterWeapons {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
 	@Column(name = "character_id")
 	private long characterId;
 	
-	private long weapon_id;
+	@Column(name = "weapon_id")
+	private long weaponId;
 
 	public CharacterWeapons() {
 		super();
@@ -29,7 +30,7 @@ public class CharacterWeapons {
 	public CharacterWeapons(long id, long characterId, long weapon_id) {
 		this.id = id;
 		this.characterId = characterId;
-		this.weapon_id = weapon_id;
+		this.weaponId = weapon_id;
 	}
 	
 	public long getId() {
@@ -49,17 +50,17 @@ public class CharacterWeapons {
 		this.characterId = characterId;
 	}
 
-	public long getWeapon_id() {
-		return weapon_id;
+	public long getWeaponId() {
+		return weaponId;
 	}
 
 	public void setWeapon_id(long weapon_id) {
-		this.weapon_id = weapon_id;
+		this.weaponId = weapon_id;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(characterId, id, weapon_id);
+		return Objects.hash(characterId, id, weaponId);
 	}
 
 	@Override
@@ -71,12 +72,12 @@ public class CharacterWeapons {
 		if (getClass() != obj.getClass())
 			return false;
 		CharacterWeapons other = (CharacterWeapons) obj;
-		return characterId == other.characterId && id == other.id && weapon_id == other.weapon_id;
+		return characterId == other.characterId && id == other.id && weaponId == other.weaponId;
 	}
 
 	@Override
 	public String toString() {
-		return "CharacterWeapons [id=" + id + ", character_id=" + characterId + ", weapon_id=" + weapon_id + "]";
+		return "CharacterWeapons [id=" + id + ", character_id=" + characterId + ", weaponId=" + weaponId + "]";
 	}
 	
 }

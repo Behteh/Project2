@@ -118,4 +118,16 @@ public class UserController {
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;
 	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "There was an error processing the request.");
+		jsonObject.appendField("error_cause", "A general exception occurred that doesn't have a specific handler.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
 }

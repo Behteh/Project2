@@ -39,5 +39,24 @@ public class CharacterArmorService {
 		}
 		return armors;
 	}
+	
+	public Armor addArmor(long character_id, long armor_id)
+	{
+		CharacterArmor armor = new CharacterArmor();
+		armor.setCharacterId(character_id);
+		armor.setArmorId(armor_id);
+		repo.save(armor);
+		Optional<Armor> armorStats = armorRepository.findById(armor_id);
+		return armorStats.get();
+	}
+	
+	public void removeArmor(long character_id, long armor_id)
+	{
+		Optional<CharacterArmor> ca = repo.findFirstByCharacterIdAndArmorId(character_id, armor_id);
+		if(ca.isPresent())
+		{
+			repo.deleteById(ca.get().getId());
+		}
+	}
 
 }

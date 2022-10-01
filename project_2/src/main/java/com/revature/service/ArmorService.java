@@ -45,4 +45,9 @@ public class ArmorService {
 		armorRepository.deleteById(id);
 	}
 	
+	public boolean exists(long id)
+	{
+		return armorRepository.existsById(id);
+	}
+	
 }

@@ -7,7 +7,6 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.revature.exceptions.GameUserNotFoundException;
 import com.revature.exceptions.MessageNotFoundException;
 import com.revature.repository.entity.ChatMessage;
 import com.revature.service.ChatMessageService;
@@ -95,6 +93,18 @@ public class MessageController {
 		jsonObject.appendField("error_code", 404);
 		jsonObject.appendField("error_message", "The message does not exist.");
 		jsonObject.appendField("error_cause", "You navigated directly rather than using a link.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "There was an error processing the request.");
+		jsonObject.appendField("error_cause", "A general exception occurred that doesn't have a specific handler.");
 		jsonObject.appendField("date", LocalDate.now());
 		jsonObject.appendField("time", LocalTime.now());
 		return jsonObject;

@@ -22,20 +22,24 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.revature.exceptions.ArmorNotFoundException;
 import com.revature.exceptions.CharacterNotFoundException;
 import com.revature.exceptions.GameUserAlreadyExistsException;
 import com.revature.exceptions.MessageNotFoundException;
 import com.revature.exceptions.NoArmorsException;
 import com.revature.exceptions.NoPermissionException;
 import com.revature.exceptions.NoWeaponsException;
+import com.revature.exceptions.WeaponNotFoundException;
 import com.revature.repository.entity.Armor;
 import com.revature.repository.entity.CharacterSheet;
 import com.revature.repository.entity.PrivateMessage;
 import com.revature.repository.entity.Weapon;
+import com.revature.service.ArmorService;
 import com.revature.service.CharacterArmorService;
 import com.revature.service.CharacterSheetService;
 import com.revature.service.CharacterWeaponsService;
 import com.revature.service.PrivateMessageService;
+import com.revature.service.WeaponService;
 
 import net.minidev.json.JSONObject;
 
@@ -48,14 +52,18 @@ public class CharacterController {
 	private CharacterWeaponsService characterWeaponsService;
 	private PrivateMessageService privateMessageService;
 	private CharacterArmorService characterArmorService;
+	private WeaponService weaponService;
+	private ArmorService armorService;
 
 	public CharacterController(CharacterSheetService characterSheetService,
 			CharacterWeaponsService characterWeaponsService, PrivateMessageService privateMessageService,
-			CharacterArmorService characterArmorService) {
+			CharacterArmorService characterArmorService, WeaponService weaponService, ArmorService armorService) {
 		this.characterSheetService = characterSheetService;
 		this.characterWeaponsService = characterWeaponsService;
 		this.privateMessageService = privateMessageService;
 		this.characterArmorService = characterArmorService;
+		this.weaponService = weaponService;
+		this.armorService = armorService;
 	}
 
 	@PostMapping(value="/create")
@@ -174,6 +182,40 @@ public class CharacterController {
 		return ResponseEntity.ok(weapons);
 	}
 	
+	@PutMapping(value="{id}/weapons/add", produces="application/json")
+	public @ResponseBody ResponseEntity<?> addWeapon(
+			@PathVariable("id") long player_id,
+			@RequestParam(name = "id", required=true) long weapon_id) throws CharacterNotFoundException, WeaponNotFoundException
+	{
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
+		if(!weaponService.exists(weapon_id))
+		{
+			throw new WeaponNotFoundException();
+		}
+		Weapon weapon = characterWeaponsService.addWeapon(player_id, weapon_id);
+		return ResponseEntity.status(201).body(weapon);
+	}
+	
+	@DeleteMapping(value="{id}/weapons/delete")
+	public @ResponseBody ResponseEntity<?> deleteWeapon(
+			@PathVariable("id") long player_id,
+			@RequestParam(name = "id", required=true) long weapon_id) throws CharacterNotFoundException, WeaponNotFoundException
+	{
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
+		if(!weaponService.exists(weapon_id))
+		{
+			throw new WeaponNotFoundException();
+		}
+		characterWeaponsService.removeWeapon(player_id, weapon_id);
+		return ResponseEntity.status(204).body("");
+	}
+	
 	@GetMapping(value="/{id}/armors", produces="application/json")
 	public @ResponseBody ResponseEntity<?> getArmor(
 			@PathVariable("id") long player_id
@@ -188,6 +230,40 @@ public class CharacterController {
 			throw new NoArmorsException();
 		}
 		return ResponseEntity.ok(armors);
+	}
+	
+	@PutMapping(value="{id}/armors/add", produces="application/json")
+	public @ResponseBody ResponseEntity<?> addArmor(
+			@PathVariable("id") long player_id,
+			@RequestParam(name = "id", required=true) long armor_id) throws CharacterNotFoundException, ArmorNotFoundException
+	{
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
+		if(!armorService.exists(armor_id))
+		{
+			throw new ArmorNotFoundException();
+		}
+		Armor armor = characterArmorService.addArmor(player_id, armor_id);
+		return ResponseEntity.status(201).body(armor);
+	}
+	
+	@DeleteMapping(value="{id}/armors/delete")
+	public @ResponseBody ResponseEntity<?> deleteArmor(
+			@PathVariable("id") long player_id,
+			@RequestParam(name = "id", required=true) long armor_id) throws CharacterNotFoundException, ArmorNotFoundException
+	{
+		if(!characterSheetService.exists(player_id))
+		{
+			throw new CharacterNotFoundException();
+		}
+		if(!armorService.exists(armor_id))
+		{
+			throw new ArmorNotFoundException();
+		}
+		characterArmorService.removeArmor(player_id, armor_id);
+		return ResponseEntity.status(204).body("");
 	}
 	
 	@PutMapping(value="/{id}/message")
@@ -345,4 +421,39 @@ public class CharacterController {
 		return jsonObject;
 	}
 	
+	@ExceptionHandler(WeaponNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Object onWeaponNotFoundException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 404);
+		jsonObject.appendField("error_message", "The weapon does not exist.");
+		jsonObject.appendField("error_cause", "You entered an invalid weapon id instead of following links.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(ArmorNotFoundException.class)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Object onArmorNotFoundException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 404);
+		jsonObject.appendField("error_message", "The armor does not exist.");
+		jsonObject.appendField("error_cause", "You entered an invalid armor id instead of following links.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
+	
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Object onException() {
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.appendField("error_code", 400);
+		jsonObject.appendField("error_message", "There was an error processing the request.");
+		jsonObject.appendField("error_cause", "A general exception occurred that doesn't have a specific handler.");
+		jsonObject.appendField("date", LocalDate.now());
+		jsonObject.appendField("time", LocalTime.now());
+		return jsonObject;
+	}
 }

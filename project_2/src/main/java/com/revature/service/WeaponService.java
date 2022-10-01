@@ -47,4 +47,9 @@ public class WeaponService {
 		weaponRepository.deleteById(id);
 	}
 	
+	public boolean exists(long id)
+	{
+		return weaponRepository.existsById(id);
+	}
+	
 }
